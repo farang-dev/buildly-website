@@ -8,24 +8,28 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 
+
 const portfolioItems = [
   {
-    title: "田中歯科クリニック",
-    description: "地域密着型の歯科医院サイト。清潔感のあるデザインで信頼性を重視。",
-    category: "医院",
-    url: "#"
+    title: "スマイル歯科クリニック",
+    description: "地域密着型の歯科医院サイト。最新設備と豊富な経験を持つ医師による安心の治療。",
+    category: "歯科医院",
+    image: "/dental-clinic.jpg",
+    url: "https://dental-clinic-brown-xi.vercel.app/"
   },
   {
-    title: "美容室 SALON TOKYO",
-    description: "モダンでスタイリッシュな美容室サイト。施術例やスタッフ紹介を充実。",
+    title: "SALON TOKYO",
+    description: "東京の中心地にあるプレミアムヘアサロン。最新トレンドと伝統技術の融合。",
     category: "美容院",
-    url: "#"
+    image: "/hair-salon.jpg",
+    url: "https://hair-salon-mu.vercel.app/"
   },
   {
-    title: "整骨院 BODY CARE",
-    description: "温かみのあるデザインで安心感を演出。施術内容と料金を分かりやすく表示。",
+    title: "やすらぎ整骨院",
+    description: "患者様一人ひとりに寄り添う治療。肩こり・腰痛・スポーツ外傷の専門治療。",
     category: "整骨院",
-    url: "#"
+    image: "/clinic.jpg",
+    url: "https://osteopathic-clinic.vercel.app/"
   }
 ];
 
@@ -281,27 +285,43 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {item.category}
-                      </Badge>
-                      <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
-                    </div>
-                    <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
-                      {item.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      {item.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <span className="text-gray-400 text-sm">サイト画像</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                <a 
+                  href={item.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block h-full"
+                >
+                  <Card className="h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {item.category}
+                        </Badge>
+                        <span className="text-gray-400 group-hover:text-blue-600 transition-colors">→</span>
+                      </div>
+                      <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                        {item.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {item.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden group">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
+                            サイトを見る →
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </a>
               </motion.div>
             ))}
           </div>
