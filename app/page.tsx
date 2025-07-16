@@ -268,11 +268,11 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">制作例</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">ウェブサイトサンプル</h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-              様々な業種のスモールビジネス向けに制作したサイトをご覧ください。
+              様々な業種のスモールビジネス向けのウェブサイトサンプルをご覧ください。
               <br />
-              各サイトをクリックすると、実際のサイトをご確認いただけます。
+              各サンプルをクリックすると、実際のサイトをご確認いただけます。
             </p>
           </motion.div>
 
@@ -307,17 +307,12 @@ export default function Home() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden group">
+                      <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden group">
                         <img
                           src={item.image}
                           alt={item.title}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
-                            サイトを見る →
-                          </span>
-                        </div>
                       </div>
                     </CardContent>
                   </Card>
