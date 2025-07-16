@@ -82,6 +82,13 @@ Buildly お問い合わせフォームより
                 </div>
                 <span className="text-xl font-semibold text-gray-900">Buildly</span>
               </Link>
+              
+              {/* Mobile-friendly back button */}
+              <Link href="/">
+                <Button variant="outline" size="sm" className="text-sm">
+                  ← ホームに戻る
+                </Button>
+              </Link>
             </div>
           </div>
         </header>
@@ -150,13 +157,12 @@ Buildly お問い合わせフォームより
               <span className="text-xl font-semibold text-gray-900">Buildly</span>
             </Link>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/#service" className="text-gray-600 hover:text-gray-900 transition-colors">サービス</Link>
-              <Link href="/#portfolio" className="text-gray-600 hover:text-gray-900 transition-colors">制作例</Link>
-              <Link href="/#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">料金</Link>
-              <Link href="/#process" className="text-gray-600 hover:text-gray-900 transition-colors">制作の流れ</Link>
-              <Button variant="outline">お問い合わせ</Button>
-            </nav>
+            {/* Mobile-friendly back button */}
+            <Link href="/">
+              <Button variant="outline" size="sm" className="text-sm">
+                ← ホームに戻る
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -181,7 +187,7 @@ Buildly お問い合わせフォームより
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}

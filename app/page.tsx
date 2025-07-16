@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,6 +48,8 @@ const processSteps = [
 ];
 
 export default function Home() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -54,9 +57,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <motion.div 
+              className="flex items-center space-x-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-2"
+              transition={{ duration: 0.6 }}
             >
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">B</span>
@@ -64,6 +68,7 @@ export default function Home() {
               <span className="text-xl font-semibold text-gray-900">Buildly</span>
             </motion.div>
             
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#service" className="text-gray-600 hover:text-gray-900 transition-colors">サービス</a>
               <a href="#portfolio" className="text-gray-600 hover:text-gray-900 transition-colors">制作例</a>
@@ -73,7 +78,67 @@ export default function Home() {
                 <Button variant="outline">お問い合わせ</Button>
               </Link>
             </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="メニューを開く"
+            >
+              <div className="w-6 h-6 flex flex-col justify-center items-center">
+                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 mt-1 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
+                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 mt-1 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+              </div>
+            </button>
           </div>
+
+          {/* Mobile Navigation */}
+          <motion.nav
+            initial={false}
+            animate={{
+              height: isMobileMenuOpen ? 'auto' : 0,
+              opacity: isMobileMenuOpen ? 1 : 0
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="md:hidden overflow-hidden"
+          >
+            <div className="py-4 space-y-4 border-t border-gray-200 mt-4">
+              <a 
+                href="#service" 
+                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                サービス
+              </a>
+              <a 
+                href="#portfolio" 
+                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                制作例
+              </a>
+              <a 
+                href="#pricing" 
+                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                料金
+              </a>
+              <a 
+                href="#process" 
+                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                制作の流れ
+              </a>
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full mt-2">
+                  お問い合わせ
+                </Button>
+              </Link>
+            </div>
+          </motion.nav>
         </div>
       </header>
 
@@ -86,25 +151,29 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <Badge className="mb-6 bg-blue-50 text-blue-700 border-blue-200">AI駆動のWeb制作サービス</Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               スモールビジネスの
               <br />
               <span className="text-blue-600">成長を加速する</span>
               <br />
               Webサイト制作
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
               生成AIを活用し、従来の制作工程を大幅に短縮。
-              <br />
+              <br className="hidden sm:block" />
               デザイン工程をスキップして、低価格・短納期でプロフェッショナルなサイトを制作します。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                無料相談を始める
-              </Button>
-              <Button variant="outline" size="lg">
-                制作例を見る
-              </Button>
+              <Link href="/contact">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
+                  無料相談を始める
+                </Button>
+              </Link>
+              <a href="#portfolio">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  制作例を見る
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -119,13 +188,13 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">なぜBuildlyなのか？</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">なぜBuildlyなのか？</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               従来のWeb制作では時間とコストがかかりすぎる。Buildlyは生成AIの力で、その課題を解決します。
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -195,15 +264,15 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">制作例</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">制作例</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               様々な業種のスモールビジネス向けに制作したサイトをご覧ください。
               <br />
               各サイトをクリックすると、実際のサイトをご確認いただけます。
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolioItems.map((item, index) => (
               <motion.div
                 key={index}
@@ -248,8 +317,8 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">料金プラン</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">料金プラン</h2>
+            <p className="text-lg sm:text-xl text-gray-600">
               シンプルで分かりやすい料金体系。追加費用なしで安心してご利用いただけます。
             </p>
           </motion.div>
@@ -318,13 +387,13 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">制作の流れ</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">制作の流れ</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               シンプルな3ステップで、あなたのビジネスに最適なWebサイトを制作します。
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {processSteps.map((step, index) => (
               <motion.div
                 key={index}
@@ -332,7 +401,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className="text-center"
+                className="text-center relative"
               >
                 <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
                   {step.step}
@@ -340,7 +409,7 @@ export default function Home() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">{step.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{step.description}</p>
                 {index < processSteps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-full w-full">
+                  <div className="hidden md:block absolute top-8 left-full w-full z-0">
                     <div className="w-8 h-0.5 bg-gray-300 mx-auto"></div>
                   </div>
                 )}
@@ -358,12 +427,12 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-bold text-white mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
               あなたのビジネスを
               <br />
               次のレベルへ
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               まずは無料相談から始めませんか？
               <br />
               あなたのビジネスに最適なWebサイトについてお話しましょう。
@@ -382,8 +451,8 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">B</span>
@@ -398,27 +467,27 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">サービス</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Web制作</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">SEO対策</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">保守・運用</a></li>
+                <li><a href="#service" className="hover:text-white transition-colors">Web制作</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">料金プラン</a></li>
+                <li><a href="#process" className="hover:text-white transition-colors">制作の流れ</a></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">会社情報</h4>
+              <h4 className="font-semibold mb-4">サイト</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">会社概要</a></li>
+                <li><a href="#portfolio" className="hover:text-white transition-colors">制作例</a></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">お問い合わせ</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">プライバシーポリシー</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">利用規約</a></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">お問い合わせ</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>Email: info@buildly.jp</li>
-                <li>Tel: 03-1234-5678</li>
+                <li>Email: mf.nozawa.day@gmail.com</li>
                 <li>営業時間: 平日 9:00-18:00</li>
+                <li>対応エリア: 全国（オンライン）</li>
               </ul>
             </div>
           </div>
