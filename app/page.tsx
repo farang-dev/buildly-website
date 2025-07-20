@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,99 +51,8 @@ const processSteps = [
 ];
 
 export default function Home() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <motion.div 
-              className="flex items-center space-x-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
-              </div>
-              <span className="text-xl font-semibold text-gray-900">Buildly</span>
-            </motion.div>
-            
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#service" className="text-gray-600 hover:text-gray-900 transition-colors">サービス</a>
-              <a href="#portfolio" className="text-gray-600 hover:text-gray-900 transition-colors">制作例</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">料金</a>
-              <a href="#process" className="text-gray-600 hover:text-gray-900 transition-colors">制作の流れ</a>
-              <Link href="/contact">
-                <Button variant="outline">お問い合わせ</Button>
-              </Link>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="メニューを開く"
-            >
-              <div className="w-6 h-6 flex flex-col justify-center items-center">
-                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 mt-1 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-                <span className={`block w-5 h-0.5 bg-gray-600 transition-all duration-300 mt-1 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-              </div>
-            </button>
-          </div>
-
-          {/* Mobile Navigation */}
-          <motion.nav
-            initial={false}
-            animate={{
-              height: isMobileMenuOpen ? 'auto' : 0,
-              opacity: isMobileMenuOpen ? 1 : 0
-            }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden overflow-hidden"
-          >
-            <div className="py-4 space-y-4 border-t border-gray-200 mt-4">
-              <a 
-                href="#service" 
-                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                サービス
-              </a>
-              <a 
-                href="#portfolio" 
-                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                制作例
-              </a>
-              <a 
-                href="#pricing" 
-                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                料金
-              </a>
-              <a 
-                href="#process" 
-                className="block text-gray-600 hover:text-gray-900 transition-colors py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                制作の流れ
-              </a>
-              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full mt-2">
-                  お問い合わせ
-                </Button>
-              </Link>
-            </div>
-          </motion.nav>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section className="py-20 px-6">
