@@ -97,13 +97,14 @@ function SimpleContentRenderer({ content }: { content: NotionBlock[] }) {
 }
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = await getBlogPost(params.id);
+  const { id } = await params;
+  const post = await getBlogPost(id);
 
   if (!post) {
     notFound();
