@@ -6,6 +6,10 @@ import { BlockObjectResponse, PartialBlockObjectResponse } from '@notionhq/clien
 
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
 
+interface NotionBlockWithChildren extends NotionBlock {
+  children?: NotionBlock[];
+}
+
 interface RichTextItem {
   plain_text: string;
   [key: string]: unknown;
@@ -13,14 +17,25 @@ interface RichTextItem {
 
 // Simple content renderer for server component
 function SimpleContentRenderer({ content }: { content: NotionBlock[] }) {
-  const renderBlock = (block: NotionBlock) => {
+  const renderBlock = (block: NotionBlock, depth: number = 0) => {
     if (!block || !('type' in block) || !block.type) return null;
+    
+    const children = (block as NotionBlockWithChildren).children;
     
     switch (block.type) {
       case 'paragraph':
         if ('paragraph' in block && block.paragraph?.rich_text) {
           const text = block.paragraph.rich_text.map((item: RichTextItem) => item.plain_text).join('');
-          return <p key={block.id} className="mb-4">{text}</p>;
+          return (
+            <div key={block.id}>
+              <p className="mb-4">{text}</p>
+              {children && children.length > 0 && (
+                <div className="ml-4">
+                  {children.map((child: NotionBlock) => renderBlock(child, depth + 1))}
+                </div>
+              )}
+            </div>
+          );
         }
         return null;
       
@@ -48,14 +63,32 @@ function SimpleContentRenderer({ content }: { content: NotionBlock[] }) {
       case 'bulleted_list_item':
         if ('bulleted_list_item' in block && block.bulleted_list_item?.rich_text) {
           const text = block.bulleted_list_item.rich_text.map((item: RichTextItem) => item.plain_text).join('');
-          return <li key={block.id} className="mb-2 ml-4 list-disc">{text}</li>;
+          return (
+            <li key={block.id} className="mb-2 ml-4 list-disc">
+              {text}
+              {children && children.length > 0 && (
+                <ul className="mt-2">
+                  {children.map((child: NotionBlock) => renderBlock(child, depth + 1))}
+                </ul>
+              )}
+            </li>
+          );
         }
         return null;
       
       case 'numbered_list_item':
         if ('numbered_list_item' in block && block.numbered_list_item?.rich_text) {
           const text = block.numbered_list_item.rich_text.map((item: RichTextItem) => item.plain_text).join('');
-          return <li key={block.id} className="mb-2 ml-4 list-decimal">{text}</li>;
+          return (
+            <li key={block.id} className="mb-2 ml-4 list-decimal">
+              {text}
+              {children && children.length > 0 && (
+                <div className="mt-2 ml-4">
+                  {children.map((child: NotionBlock) => renderBlock(child, depth + 1))}
+                </div>
+              )}
+            </li>
+          );
         }
         return null;
       
@@ -91,7 +124,7 @@ function SimpleContentRenderer({ content }: { content: NotionBlock[] }) {
 
   return (
     <div className="prose prose-lg max-w-none">
-      {content.map(renderBlock)}
+      {content.map((block) => renderBlock(block))}
     </div>
   );
 }

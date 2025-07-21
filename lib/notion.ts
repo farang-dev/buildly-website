@@ -13,6 +13,10 @@ const notion = new Client({
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
 type NotionPage = PageObjectResponse | PartialPageObjectResponse;
 
+interface NotionBlockWithChildren extends NotionBlock {
+  children?: NotionBlock[];
+}
+
 interface RichTextItem {
   plain_text: string;
   [key: string]: unknown;
@@ -120,6 +124,27 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
+async function getBlocksWithChildren(blockId: string): Promise<NotionBlock[]> {
+  const response = await notion.blocks.children.list({
+    block_id: blockId,
+    page_size: 100,
+  });
+
+  const blocks: NotionBlock[] = [];
+  
+  for (const block of response.results) {
+    if ('type' in block && block.has_children) {
+      // Get children for blocks that have them
+      const children = await getBlocksWithChildren(block.id);
+      // Add children property to the block
+       (block as NotionBlockWithChildren).children = children;
+    }
+    blocks.push(block);
+  }
+  
+  return blocks;
+}
+
 export async function getBlogPost(id: string): Promise<BlogPost | null> {
   try {
     const pageResponse = await notion.pages.retrieve({
@@ -133,13 +158,10 @@ export async function getBlogPost(id: string): Promise<BlogPost | null> {
     const title = getPlainTextFromRichText(pageResponse.properties.title);
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     
-    // Get full page content
-    const contentResponse = await notion.blocks.children.list({
-      block_id: id,
-      page_size: 100,
-    });
+    // Get full page content with children
+    const content = await getBlocksWithChildren(id);
 
-    const excerpt = extractExcerpt(contentResponse.results.slice(0, 3));
+    const excerpt = extractExcerpt(content.slice(0, 3));
 
     return {
        id,
@@ -147,7 +169,7 @@ export async function getBlogPost(id: string): Promise<BlogPost | null> {
        publishedDate: pageResponse.created_time,
        lastEditedTime: pageResponse.last_edited_time,
        excerpt,
-       content: contentResponse.results,
+       content,
      };
   } catch (error) {
     console.error('Error fetching blog post:', error);
