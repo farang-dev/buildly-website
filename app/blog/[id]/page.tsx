@@ -48,14 +48,14 @@ function SimpleContentRenderer({ content }: { content: NotionBlock[] }) {
       case 'bulleted_list_item':
         if ('bulleted_list_item' in block && block.bulleted_list_item?.rich_text) {
           const text = block.bulleted_list_item.rich_text.map((item: RichTextItem) => item.plain_text).join('');
-          return <li key={block.id} className="mb-2">{text}</li>;
+          return <li key={block.id} className="mb-2 ml-4 list-disc">{text}</li>;
         }
         return null;
       
       case 'numbered_list_item':
         if ('numbered_list_item' in block && block.numbered_list_item?.rich_text) {
           const text = block.numbered_list_item.rich_text.map((item: RichTextItem) => item.plain_text).join('');
-          return <li key={block.id} className="mb-2">{text}</li>;
+          return <li key={block.id} className="mb-2 ml-4 list-decimal">{text}</li>;
         }
         return null;
       
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Article Header */}
-      <article className="py-6 sm:py-12 px-3 sm:px-6">
+      <article className="py-6 sm:py-12 px-4 sm:px-6">
         <div className="max-w-3xl sm:max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="mb-6 sm:mb-8">
@@ -175,7 +175,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </header>
 
           {/* Article Content */}
-          <div className="prose prose-sm sm:prose-lg max-w-none px-1 sm:px-0">
+          <div className="prose prose-sm sm:prose-lg max-w-none">
             <div className="notion-content-wrapper">
               <SimpleContentRenderer content={post.content} />
             </div>
