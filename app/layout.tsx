@@ -16,6 +16,26 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Buildly - AI駆動のWeb制作サービス",
   description: "生成AIを活用し、従来の制作工程を大幅に短縮。デザイン工程をスキップして、低価格・短納期でプロフェッショナルなサイトを制作します。",
+  icons: {
+    icon: [
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/favicon.ico',
+        sizes: '32x32',
+        type: 'image/x-icon',
+      },
+    ],
+    apple: [
+      {
+        url: '/apple-touch-icon.svg',
+        sizes: '180x180',
+        type: 'image/svg+xml',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
