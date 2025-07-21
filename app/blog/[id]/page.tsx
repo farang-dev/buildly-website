@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { notFound } from 'next/navigation';
 import { BlockObjectResponse, PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
+// Revalidate every 60 seconds to ensure fresh content from Notion
+export const revalidate = 60;
+// Force dynamic rendering to prevent static generation
+export const dynamic = 'force-dynamic';
+
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
 
 type NotionBlockWithChildren = NotionBlock & {
