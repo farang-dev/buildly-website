@@ -6,9 +6,9 @@ import { BlockObjectResponse, PartialBlockObjectResponse } from '@notionhq/clien
 
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
 
-interface NotionBlockWithChildren extends NotionBlock {
+type NotionBlockWithChildren = NotionBlock & {
   children?: NotionBlock[];
-}
+};
 
 interface RichTextItem {
   plain_text: string;
