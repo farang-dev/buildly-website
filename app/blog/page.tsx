@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { getBlogPosts, type BlogPost } from '../../lib/notion';
 
-// Revalidate every 60 seconds to ensure fresh content from Notion
-export const revalidate = 60;
-// Force dynamic rendering to prevent static generation
+// Force dynamic rendering and disable all caching
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 async function BlogPage() {
   const posts = await getBlogPosts();

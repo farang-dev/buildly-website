@@ -8,6 +8,17 @@ import {
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN || 'dummy_token',
+  fetch: (url, init) => {
+    return fetch(url, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+  }
 });
 
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
@@ -45,77 +56,110 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       return [];
     }
 
-    // Get child pages of the parent page
-    const response = await notion.blocks.children.list({
-      block_id: pageId,
-      page_size: 100,
-    });
-
-    console.log('Notion API Response:', {
-      pageId,
-      totalResults: response.results.length,
-      results: response.results.map(block => ({
-        id: block.id,
-        type: 'type' in block ? block.type : 'unknown',
-        hasChildPage: 'type' in block && block.type === 'child_page'
-      }))
-    });
-
+    // Try both methods: database query and child pages
     const posts: BlogPost[] = [];
-
-    for (const block of response.results) {
-      console.log('Processing block:', {
-        id: block.id,
-        type: 'type' in block ? block.type : 'unknown',
-        isChildPage: 'type' in block && block.type === 'child_page'
+    
+    try {
+      // Method 1: Try to query as database
+      const databaseResponse = await notion.databases.query({
+        database_id: pageId,
+        page_size: 100,
       });
       
-      if ('type' in block && block.type === 'child_page' && 'child_page' in block) {
-        try {
-          const pageResponse = await notion.pages.retrieve({
-            page_id: block.id,
+      console.log('Database query response:', {
+        pageId,
+        totalResults: databaseResponse.results.length,
+        results: databaseResponse.results.map(page => ({
+          id: page.id,
+          hasProperties: 'properties' in page
+        }))
+      });
+      
+      for (const page of databaseResponse.results) {
+        if ('properties' in page && 'created_time' in page && 'last_edited_time' in page) {
+          // Handle different property structures for database pages
+          let title = 'Untitled';
+          const titleProp = page.properties.title || page.properties.Name || page.properties.Title;
+          if (titleProp && 'title' in titleProp && titleProp.title) {
+            title = titleProp.title.map((text: RichTextItem) => text.plain_text).join('');
+          }
+          
+          // Get page content for excerpt
+          const contentResponse = await notion.blocks.children.list({
+            block_id: page.id,
+            page_size: 5,
           });
 
-          console.log('Page response for', block.id, ':', {
-            hasProperties: 'properties' in pageResponse,
-            properties: 'properties' in pageResponse ? Object.keys(pageResponse.properties) : 'none'
-          });
+          const excerpt = extractExcerpt(contentResponse.results);
 
-          if ('properties' in pageResponse) {
-            const title = getPlainTextFromRichText(pageResponse.properties.title);
-            console.log('Extracted title:', title);
-            
-            const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            
-            // Get page content for excerpt
-            const contentResponse = await notion.blocks.children.list({
-              block_id: block.id,
-              page_size: 5, // Just get first few blocks for excerpt
+          const post = {
+            id: page.id,
+            title,
+            publishedDate: page.created_time,
+            lastEditedTime: page.last_edited_time,
+            excerpt,
+            content: [],
+          };
+          
+          posts.push(post);
+        }
+      }
+    } catch (dbError) {
+      console.log('Database query failed, trying child pages method:', dbError);
+      
+      // Method 2: Get child pages of the parent page
+      const response = await notion.blocks.children.list({
+        block_id: pageId,
+        page_size: 100,
+      });
+
+      console.log('Child pages response:', {
+        pageId,
+        totalResults: response.results.length,
+        results: response.results.map(block => ({
+          id: block.id,
+          type: 'type' in block ? block.type : 'unknown',
+          hasChildPage: 'type' in block && block.type === 'child_page'
+        }))
+      });
+
+      for (const block of response.results) {
+        if ('type' in block && block.type === 'child_page' && 'child_page' in block) {
+          try {
+            const pageResponse = await notion.pages.retrieve({
+              page_id: block.id,
             });
 
-            const excerpt = extractExcerpt(contentResponse.results);
-            console.log('Extracted excerpt:', excerpt);
+            if ('properties' in pageResponse) {
+              const title = getPlainTextFromRichText(pageResponse.properties.title);
+              
+              // Get page content for excerpt
+              const contentResponse = await notion.blocks.children.list({
+                block_id: block.id,
+                page_size: 5,
+              });
 
-            const post = {
-               id: block.id,
-               title,
-               publishedDate: pageResponse.created_time,
-               lastEditedTime: pageResponse.last_edited_time,
-               excerpt,
-               content: [], // Will be loaded separately when needed
-             };
-             
-            console.log('Adding post:', post);
-            posts.push(post);
-          } else {
-            console.log('No properties found in page response for', block.id);
+              const excerpt = extractExcerpt(contentResponse.results);
+
+              const post = {
+                id: block.id,
+                title,
+                publishedDate: pageResponse.created_time,
+                lastEditedTime: pageResponse.last_edited_time,
+                excerpt,
+                content: [],
+              };
+              
+              posts.push(post);
+            }
+          } catch (error) {
+            console.error('Error processing page', block.id, ':', error);
           }
-        } catch (error) {
-          console.error('Error processing page', block.id, ':', error);
         }
       }
     }
 
+    console.log('Final posts count:', posts.length);
     // Sort by creation date (newest first)
     return posts.sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime());
   } catch (error) {
