@@ -33,6 +33,14 @@ export function Navigation() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const goToHome = () => {
+    if (pathname === '/') {
+      scrollToTop();
+    } else {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <>
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
@@ -43,7 +51,7 @@ export function Navigation() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              onClick={scrollToTop}
+              onClick={goToHome}
             >
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">B</span>
