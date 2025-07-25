@@ -4,10 +4,8 @@ import { Button } from '@/components/ui/button';
 import { notFound } from 'next/navigation';
 import { BlockObjectResponse, PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
-// Force dynamic rendering and disable all caching
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const fetchCache = 'force-no-store';
+// Use ISR with 5 minute revalidation
+export const revalidate = 300; // 5 minutes
 
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
 

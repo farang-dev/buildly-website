@@ -3,10 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { getBlogPosts, type BlogPost } from '../../lib/notion';
 
-// Force dynamic rendering and disable all caching
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-export const fetchCache = 'force-no-store';
+// Use ISR with 5 minute revalidation
+export const revalidate = 300; // 5 minutes
 
 async function BlogPage() {
   const posts = await getBlogPosts();
@@ -68,7 +66,7 @@ async function BlogPage() {
                             })}
                           </time>
                         </div>
-                        <CardTitle className="text-xl group-hover:text-blue-600 transition-colors line-clamp-2">
+                        <CardTitle className="text-xl group-hover:text-blue-600 transition-colors leading-tight">
                           {post.title}
                         </CardTitle>
                       </CardHeader>

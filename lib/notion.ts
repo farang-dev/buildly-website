@@ -7,18 +7,7 @@ import {
 } from '@notionhq/client/build/src/api-endpoints';
 
 const notion = new Client({
-  auth: process.env.NOTION_TOKEN || 'dummy_token',
-  fetch: (url, init) => {
-    return fetch(url, {
-      ...init,
-      headers: {
-        ...init?.headers,
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
-    });
-  }
+  auth: process.env.NOTION_TOKEN,
 });
 
 type NotionBlock = BlockObjectResponse | PartialBlockObjectResponse;
