@@ -53,7 +53,7 @@ async function BlogPage() {
                 <div key={post.id}>
                   <Link href={`/blog/${post.id}`} className="block h-full">
                     <Card className="h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
-                      <CardHeader className="pb-4">
+                      <CardHeader className="pb-4 min-h-fit">
                         <div className="flex items-center justify-between mb-3">
                           <Badge variant="secondary" className="text-xs">
                             記事
@@ -66,7 +66,7 @@ async function BlogPage() {
                             })}
                           </time>
                         </div>
-                        <CardTitle className="text-xl group-hover:text-blue-600 transition-colors leading-tight">
+                        <CardTitle className="text-xl group-hover:text-blue-600 transition-colors leading-tight min-h-fit whitespace-normal break-words">
                           {post.title}
                         </CardTitle>
                       </CardHeader>
